@@ -133,7 +133,11 @@ class Ui_MainWindow(object):
         self.progress_label.setText(label)
 
     def launch_minecraft(self):
-        self.launch_thread.launch_setup_signal.emit(self.version_select.currentText().split()[-1], self.username.text())
+        latest_version = ('Latest release ' + minecraft_launcher_lib.utils.get_latest_version()["release"])
+        if latest_version == self.version_select.currentText():
+            self.launch_thread.launch_setup_signal.emit(self.version_select.currentText().split(' ', maxsplit=2)[-1], self.username.text())
+        else:
+            self.launch_thread.launch_setup_signal.emit(self.version_select.currentText().split(' ', maxsplit=1)[-1], self.username.text())
         self.launch_thread.start()
 
 if __name__ == "__main__":

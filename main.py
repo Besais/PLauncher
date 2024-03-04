@@ -50,7 +50,7 @@ class LaunchThread(QtCore.QThread):
         }
         
         self.state_update_signal.emit(False)
-        subprocess.run(minecraft_launcher_lib.command.get_minecraft_command(version=self.version_id, minecraft_directory=minecraft_directory, options=options))
+        subprocess.Popen(minecraft_launcher_lib.command.get_minecraft_command(version=self.version_id, minecraft_directory=minecraft_directory, options=options))
 
 
 class Ui_MainWindow(object):
@@ -84,7 +84,7 @@ class Ui_MainWindow(object):
             if minecraft_launcher_lib.utils.is_vanilla_version(version['id']):
                 self.version_select.addItem(version['type'] + ' ' + version['id'])
             else:
-                self.version_select.addItem(version['id'])
+                self.version_select.addItem('modded ' + version['id'])
 
         spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         self.verticalLayout.addItem(spacerItem1)

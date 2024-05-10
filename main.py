@@ -5,6 +5,7 @@ from uuid import uuid1
 
 minecraft_directory = minecraft_launcher_lib.utils.get_minecraft_directory()
 
+
 class LaunchThread(QtCore.QThread):
     launch_setup_signal = QtCore.pyqtSignal(str, str)
     progress_update_signal = QtCore.pyqtSignal(int, int, str)
@@ -41,16 +42,22 @@ class LaunchThread(QtCore.QThread):
     def run(self):
         self.state_update_signal.emit(True)
 
-        minecraft_launcher_lib.install.install_minecraft_version(versionid=self.version_id, minecraft_directory=minecraft_directory, callback={'setStatus': self.update_progress_label, 'setProgress': self.update_progress, 'setMax': self.update_progress_max})
+        minecraft_launcher_lib.install.install_minecraft_version(versionid=self.version_id,
+                                                                 minecraft_directory=minecraft_directory,
+                                                                 callback={'setStatus': self.update_progress_label,
+                                                                           'setProgress': self.update_progress,
+                                                                           'setMax': self.update_progress_max})
 
         options = {
             'username': self.username,
             'uuid': str(uuid1()),
             'token': ''
         }
-        
+
         self.state_update_signal.emit(False)
-        subprocess.Popen(minecraft_launcher_lib.command.get_minecraft_command(version=self.version_id, minecraft_directory=minecraft_directory, options=options))
+        subprocess.Popen(minecraft_launcher_lib.command.get_minecraft_command(version=self.version_id,
+                                                                              minecraft_directory=minecraft_directory,
+                                                                              options=options))
 
 
 class Ui_MainWindow(object):
@@ -80,7 +87,8 @@ class Ui_MainWindow(object):
         latest_version = minecraft_launcher_lib.utils.get_latest_version()["release"]
         self.version_select.addItem('Latest release ' + latest_version)
 
-        for version in minecraft_launcher_lib.utils.get_available_versions(minecraft_launcher_lib.utils.get_minecraft_directory()):
+        for version in minecraft_launcher_lib.utils.get_available_versions(
+                minecraft_launcher_lib.utils.get_minecraft_directory()):
             if minecraft_launcher_lib.utils.is_vanilla_version(version['id']):
                 self.version_select.addItem(version['type'] + ' ' + version['id'])
             else:
@@ -135,15 +143,19 @@ class Ui_MainWindow(object):
     def launch_minecraft(self):
         latest_version = ('Latest release ' + minecraft_launcher_lib.utils.get_latest_version()["release"])
         if latest_version == self.version_select.currentText():
-            self.launch_thread.launch_setup_signal.emit(self.version_select.currentText().split(' ', maxsplit=2)[-1], self.username.text())
+            self.launch_thread.launch_setup_signal.emit(self.version_select.currentText().split(' ', maxsplit=2)[-1],
+                                                        self.username.text())
         else:
-            self.launch_thread.launch_setup_signal.emit(self.version_select.currentText().split(' ', maxsplit=1)[-1], self.username.text())
+            self.launch_thread.launch_setup_signal.emit(self.version_select.currentText().split(' ', maxsplit=1)[-1],
+                                                        self.username.text())
         self.launch_thread.start()
+
 
 if __name__ == "__main__":
     QtWidgets.QApplication.setAttribute(QtCore.Qt.ApplicationAttribute.AA_EnableHighDpiScaling, True)
 
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
